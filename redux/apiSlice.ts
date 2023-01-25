@@ -19,7 +19,7 @@ export const githubApi = createApi({
     baseUrl: "https://api.github.com/users/",
   }),
   endpoints: (builder) => ({
-    getUserRepos: builder.query<Repos, string>({
+    getUserRepos: builder.query<Repo, string>({
       query: (username: string) => `${username}/repos`,
     }),
   }),
