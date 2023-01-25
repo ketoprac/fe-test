@@ -8,6 +8,9 @@ interface Repo {
   private: boolean;
   html_url: string;
   description: string;
+  owner: {
+    avatar_url: string;
+  }
 }
 
 type Repos = Repo[];
