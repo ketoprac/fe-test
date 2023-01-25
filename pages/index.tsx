@@ -1,12 +1,24 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetUserReposQuery } from "../redux/apiSlice";
 
 const Home: NextPage = () => {
-  const [username, setUsername] = useState("tokopedia");
+  const searchInputRef: any = useRef(null);
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
   const { data: repos, error, isLoading } = useGetUserReposQuery(username);
-  console.log(repos);
+
+  const handleSubmit = (e: any) => {
+    setLoading(true);
+    e.preventDefault();
+    setUsername(searchInputRef.current.value);
+    setLoading(false);
+  }
+
+  console.log(username);
+
+
 
   return (
     <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center">
@@ -15,23 +27,26 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <h1 className="text-2xl text-white font-bold">Github Repository Finder</h1>
       <div className="m-2">
+        <form onSubmit={handleSubmit}>
         <input
           className="bg-slate-700 text-white font-bold p-2 rounded mr-1"
           type="text"
-          value={username}
+          ref={searchInputRef}
         />
         <input
-          className="bg-slate-700 text-white p-2 rounded"
+          className="bg-slate-700 text-white p-2 rounded cursor-pointer hover:bg-slate-800"
           type="submit"
-          value="Search"
+          value={isLoading ? "/" : "Search"}
         />
+        </form>
       </div>
       <main className="flex items-center justify-center text-white font-bold gap-5 px-12 py-6 rounded w-8/12">
         {error ? (
           <>Oh no, there was an error</>
         ) : isLoading ? (
-          <p className="animate-spin">Loading...</p>
+          <p className="animate-spin">o</p>
         ) : repos && repos.length > 1 ? (
           <div>
             <div className="flex justify-center items-end gap-2 mb-2">
@@ -40,7 +55,7 @@ const Home: NextPage = () => {
                 src={repos[0].owner.avatar_url}
                 alt="avatar"
               />
-              <h1 className="text-3xl mb-2">{username}'s Repositories</h1>
+              <h1 className="text-3xl mb-2 font-semibold">{username}'s Repositories</h1>
             </div>
             <div className="flex items-center justify-center flex-wrap gap-2">
               {repos.map((repo) => (
